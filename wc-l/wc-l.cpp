@@ -12,7 +12,7 @@ using namespace std;
 int main(int argc, char** argv ) {
     long long t1, t2, freq;
 	string str;
-	
+	int q =0;
 	//if (argc == 1) 
     //{
     //    cerr << "Error: need text file\n";
@@ -25,11 +25,16 @@ int main(int argc, char** argv ) {
 	
     QueryPerformanceFrequency((LARGE_INTEGER *)&freq);// запрашиваем число тиков в 1 сек
 
-
+	
 	QueryPerformanceCounter((LARGE_INTEGER *)&t1);// смотрим время после окончания цикла
+	while (!f.eof()){
 	getline(f, str);
+	q++;
+	}
 	QueryPerformanceCounter((LARGE_INTEGER *)&t2);// смотрим время после окончания цикла
-
-	cout << str << "\n Time spent:" << (t2-t1)/(1.*freq);
+	
+	cout << q <<"\nTime spent:" << (t2-t1)/(1.*freq) << endl;
+	
+	system("pause");
 	return 0;
 }
