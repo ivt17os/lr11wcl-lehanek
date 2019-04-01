@@ -8,23 +8,22 @@
 #include <fstream>
 
 using namespace std;
+#define N 4096
 
 int main(int argc, char** argv ) {
     long long t1, t2, freq;
 	string str;
 	long long q =0;
-	//if (argc == 1) 
-    //{
-    //    cerr << "Error: need text file\n";
-    //    return 1;
-    //}
-	
+	DWORD nRead;
+	BOOL bResult;
+
 	cout << "Opening file a.txt\n"; // << argv[1] << "\n";
 	
-	char * s = new char [3000];
+	char * s = new char [N];
+	//FILE* fr;
+	//fr = fopen("a.txt", "rd");
 
-	FILE* fr;
-	fr = fopen ("a.txt", "rb");
+	HANDLE f = CreateFile (L"a.txt", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	//fgets(s, 512, fr);
 
 	//feof(fr);
@@ -37,18 +36,27 @@ int main(int argc, char** argv ) {
 
 	
 	QueryPerformanceCounter((LARGE_INTEGER *)&t1);// смотрим время после окончания цикла
-	while (!feof(fr)){
-		fgets(s, 3000, fr);
+	
+	do {
+		bResult = ReadFile(f, s, N, &nRead, NULL);
+		for (DWORD i = 0; i<nRead ;i++)
+			if (s[i]=='\n') q++;
+	} while (!(bResult&&nRead==0));
+	
+	
+	/*while (!feof(fr)){
+		ReadFile(f, s, N, &nRead, NULL);
+		fgets(s, N, fr);
 		q++;
-	}
+	}*/
 	
 	//while (!f.eof()){
 	//getline(f, str);
 	//q++;
 	//}
 	QueryPerformanceCounter((LARGE_INTEGER *)&t2);// смотрим время после окончания цикла
-	fclose(fr);
-	cout << q <<"\nTime spent:" << (t2-t1)/(1.*freq) << endl;
+	CloseHandle(f);
+	cout << q <<"\nTime spent:" << fixed << setprecision(3) <<(t2-t1)/(1.*freq) << endl;
 	
 	system("pause");
 	return 0;
